@@ -2,6 +2,7 @@ package deps
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"opal/internal/scanner"
 )
@@ -21,6 +22,17 @@ func AnalyzeNode(root string) error {
 	for _, p := range projects {
 
 		fmt.Println("\nProject:", p)
+
+		fmt.Println("Running npm install...")
+		install := exec.Command("npm", "install")
+		install.Dir = p
+		install.Stdout = os.Stdout
+		install.Stderr = os.Stderr
+		
+		if err := install.Run(); err != nil {
+			fmt.Println("Error running npm install:", err)
+			continue
+		}
 
 		cmd := exec.Command("npm", "outdated")
 		cmd.Dir = p

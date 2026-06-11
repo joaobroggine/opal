@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"opal/internal/deps"
 	"opal/internal/scanner"
 )
 
@@ -28,30 +29,14 @@ var initCmd = &cobra.Command{
 			fmt.Println("-", lang)
 		}
 
-		// 2. Check if is frontend
-		isFrontend, err := scanner.IsFrontend(root)
+		// 2. Node.js / frontend dependency analysis (delegated)
+		err = deps.AnalyzeNode(root)
 		if err != nil {
-			fmt.Println("Error checking frontend:", err)
+			fmt.Println("Error analyzing Node projects:", err)
 			return
 		}
 
-		if isFrontend {
-			fmt.Println("\nFrontend project detected")
-
-			hasModules, err := scanner.HasNodeModules(root)
-			if err != nil {
-				fmt.Println("Error checking node_modules:", err)
-				return
-			}
-
-			if hasModules {
-				fmt.Println("node_modules: found")
-			} else {
-				fmt.Println("node_modules: missing")
-			}
-		}
-
-		fmt.Println("\nAnalysis complete.")
+		fmt.Println("Analysis complete.")
 	},
 }
 

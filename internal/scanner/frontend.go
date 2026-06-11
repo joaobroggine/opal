@@ -7,73 +7,111 @@ import (
 
 func IsFrontend(root string) (bool, error) {
 
-	files := []string{
-		"package.json",
-		"next.config.js",
-		"next.config.ts",
-		"vite.config.js",
-		"vite.config.ts",
-		"webpack.config.js",
-		"webpack.config.ts",
-		"angular.json",
-		"vue.config.js",
-		"vue.config.ts",
-		"svelte.config.js",
-		"svelte.config.ts",
-		"rollup.config.js",
-		"rollup.config.ts",
-		"gulpfile.js",
-		"gulpfile.ts",
-		"gruntfile.js",
-		"gruntfile.ts",
-		"ember-cli-build.js",
-		"ember-cli-build.ts",
-		"parcel.config.js",
-		"parcel.config.ts",
-		"snowpack.config.js",
-		"snowpack.config.ts",
-		"react-app-env.d.ts",
-		"tsconfig.json",
-		"jsconfig.json",
-		"babel.config.js",
-		"babel.config.json",
-		".babelrc",
-		".babelrc.js",
-		".babelrc.json",
-		".eslintrc",
-		".eslintrc.js",
-		".eslintrc.json",
-		".eslintignore",
-		".stylelintrc",
-		".stylelintrc.js",
-		".stylelintrc.json",
-		".stylelintignore",
-		".postcssrc",
-		".postcssrc.js",
-		".postcssrc.json",
-		"postcss.config.js",
-		"postcss.config.json",
-		"tailwind.config.js",
-		"tailwind.config.ts",
-		"tailwind.config.cjs",
-		"tailwind.config.mjs",
-		"tailwind.config.json",
+	files := map[string]bool{
+		"package.json": true,
+		"next.config.js": true,
+		"next.config.ts": true,
+		"vite.config.js": true,
+		"vite.config.ts": true,
+		"webpack.config.js": true,
+		"webpack.config.ts": true,
+		"angular.json": true,
+		"vue.config.js": true,
+		"vue.config.ts": true,
+		"svelte.config.js": true,
+		"svelte.config.ts": true,
+		"rollup.config.js": true,
+		"rollup.config.ts": true,
+		"gulpfile.js": true,
+		"gulpfile.ts": true,
+		"gruntfile.js": true,
+		"gruntfile.ts": true,
+		"ember-cli-build.js": true,
+		"ember-cli-build.ts": true,
+		"parcel.config.js": true,
+		"parcel.config.ts": true,
+		"snowpack.config.js": true,
+		"snowpack.config.ts": true,
+		"react-app-env.d.ts": true,
+		"tsconfig.json": true,
+		"jsconfig.json": true,
+		"babel.config.js": true,
+		"babel.config.json": true,
+		".babelrc": true,
+		".babelrc.js": true,
+		".babelrc.json": true,
+		".eslintrc": true,
+		".eslintrc.js": true,
+		".eslintrc.json": true,
+		".eslintignore": true,
+		".stylelintrc": true,
+		".stylelintrc.js": true,
+		".stylelintrc.json": true,
+		".stylelintignore": true,
+		".postcssrc": true,
+		".postcssrc.js": true,
+		".postcssrc.json": true,
+		"postcss.config.js": true,
+		"postcss.config.json": true,
+		"tailwind.config.js": true,
+		"tailwind.config.ts": true,
+		"tailwind.config.cjs": true,
+		"tailwind.config.mjs": true,
+		"tailwind.config.json": true,
 	}
 
-	for _, file := range files {
+	found := false
 
-		_, err := os.Stat(filepath.Join(root, file))
-
-		if err == nil {
-			return true, nil
+	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
 		}
+
+		if info.IsDir() {
+			switch info.Name() {
+				case "node_modules", ".git", ".next", "dist", "build":
+					return filepath.SkipDir
+			}
+			return nil
+		}
+
+		if files[info.Name()] {
+			found = true
+			return filepath.SkipAll
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return false, err
 	}
-	return false, nil
+
+	return found, nil
+
 }
 
 func HasNodeModules(root string) (bool, error) {
 
-	_, err := os.Stat(filepath.Join(root, "node_modules"))
-	return err == nil, nil
+	found := false
+
+	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if info.IsDir() && info.Name() == "node_modules" {
+			found = true
+			return filepath.SkipAll
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return false, err
+	}
+
+	return found, nil
 
 }

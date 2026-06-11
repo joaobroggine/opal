@@ -37,23 +37,21 @@ var initCmd = &cobra.Command{
 
 		if isFrontend {
 			fmt.Println("\nFrontend project detected")
+
+			hasModules, err := scanner.HasNodeModules(root)
+			if err != nil {
+				fmt.Println("Error checking node_modules:", err)
+				return
+			}
+
+			if hasModules {
+				fmt.Println("node_modules: found")
+			} else {
+				fmt.Println("node_modules: missing")
+			}
 		}
 
-		// 3. Check if has node_modules
-		hasModules, err := scanner.HasNodeModules(root)
-		if err != nil {
-			fmt.Println("Error checking node_modules:", err)
-			return
-		}
-
-		if hasModules {
-			fmt.Println("node_modules found")
-		} else {
-			fmt.Println("node_modules NOT found")
-			fmt.Println("You may need to run: npm install")
-		}
-
-		fmt.Println("\nInit analysis complete")
+		fmt.Println("\nAnalysis complete.")
 	},
 }
 

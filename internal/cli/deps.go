@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"opal/internal/deps"
 )
 
 var dependenciesCmd = &cobra.Command{
@@ -11,6 +12,11 @@ var dependenciesCmd = &cobra.Command{
 	Long:  "Analyze project dependencies, detect unused packages and identify outdated versions.",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Checking dependencies...")
+		err := deps.AnalyzeNode(".")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	},
 }
 

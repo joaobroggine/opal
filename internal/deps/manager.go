@@ -2,9 +2,9 @@ package deps
 
 import (
 	"fmt"
+	"opal/internal/scanner"
 	"os"
 	"os/exec"
-	"opal/internal/scanner"
 )
 
 func AnalyzeNode(root string) error {
@@ -28,7 +28,7 @@ func AnalyzeNode(root string) error {
 		install.Dir = p
 		install.Stdout = os.Stdout
 		install.Stderr = os.Stderr
-		
+
 		if err := install.Run(); err != nil {
 			fmt.Println("Error running npm install:", err)
 			continue
@@ -45,6 +45,26 @@ func AnalyzeNode(root string) error {
 		}
 
 		fmt.Println(string(output))
+
+		var response string
+		fmt.Println("Do you want update your dependencies? (y/n)")
+		fmt.Scanln(&response)
+
+		if response == "y" {
+			update := exec.Command("npm", "update")
+			update.Dir = p
+			update.Stdout = os.Stdout
+			update.Stderr = os.Stderr
+
+			if err := update.Run(); err != nil {
+				fmt.Println("Error running npm update:", err)
+				continue
+			}
+			fmt.Println("")
+		} else {
+			fmt.Println("Skipping npm update")
+		}
+
 	}
 
 	return nil

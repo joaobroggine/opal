@@ -32,12 +32,12 @@ Opal is a high-performance command-line interface (CLI) developed in Go, designe
 
 ## Requirements
 
-- Go 1.21 ou superior.
-- Node.js e npm (necessários para as funcionalidades de análise de dependências).
+- Go 1.21 or above.
+- Node.js and npm.
 
-## Instalação
+## Installation
 
-Para compilar o binário localmente:
+To build the binary locally:
 
 ```bash
 go build -o opal ./cmd/main.go

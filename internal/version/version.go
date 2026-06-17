@@ -1,4 +1,4 @@
-package cli
+package version
 
 import (
 	"fmt"
@@ -6,21 +6,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var version = "dev"
-var commit = "none"
-var buildDate = "unknown"
+var Version = "dev"
+var Commit = "none"
+var BuildDate = "unknown"
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Display Opal version",
 	Long:  "Show version information for the installed Opal binary.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Opal CLI " + version)
-		fmt.Println("Commit:", commit)
-		fmt.Println("Build date:", buildDate)
+		fmt.Println("Opal CLI " + Version)
+		fmt.Println("Commit:", Commit)
+		fmt.Println("Build date:", BuildDate)
 	},
 }
 
-func init() {
+func Register(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(versionCmd)
 }

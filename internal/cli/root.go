@@ -2,13 +2,16 @@ package cli
 
 import (
 	"fmt"
+
+	"opal/internal/version"
+
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "opal",
 	Short: "Opal CLI",
-	Long:  `Opal helps developers analyze, maintain and document projects.
+	Long: `Opal helps developers analyze, maintain and document projects.
 
 	Features:
 	- Project scanning
@@ -21,4 +24,8 @@ var rootCmd = &cobra.Command{
 
 func Execute() error {
 	return rootCmd.Execute()
+}
+
+func init() {
+	version.Register(rootCmd)
 }
